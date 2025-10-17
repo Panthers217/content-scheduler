@@ -7,6 +7,7 @@ export default function Team() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [role, setRole] = useState('viewer')
+  const [emailError, setEmailError] = useState('')
 
   useEffect(() => {
     fetchMembers()
@@ -16,13 +17,26 @@ export default function Team() {
     axios.get('/api/members').then(r => setMembers(r.data || [])).catch(() => setMembers([]))
   }
 
+  function validateEmail(value) {
+    if (!value) return ''
+    // Simple email regex — good for client-side validation
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i
+    return re.test(value) ? '' : 'Invalid email address'
+  }
+
   function addMember(e) {
     e.preventDefault()
+    const emailValidation = validateEmail(email)
+    setEmailError(emailValidation)
+    if (email && emailValidation) return
+    if (!name) return
+
     const payload = { name, email, role }
     axios.post('/api/members', payload).then(() => {
       setName('')
       setEmail('')
       setRole('viewer')
+      setEmailError('')
       fetchMembers()
     }).catch(() => {})
   }
@@ -37,13 +51,14 @@ export default function Team() {
 
       <form onSubmit={addMember} className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-2">
         <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="border p-2 rounded" required />
-        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="border p-2 rounded" />
+        <input value={email} onChange={e => { setEmail(e.target.value); setEmailError(validateEmail(e.target.value)) }} placeholder="Email" className="border p-2 rounded" required />
+        {emailError && <div className="text-sm text-red-600">{emailError}</div>}
         <select value={role} onChange={e => setRole(e.target.value)} className="border p-2 rounded">
           <option value="admin">admin</option>
           <option value="editor">editor</option>
           <option value="viewer">viewer</option>
         </select>
-        <button className="px-4 py-2 bg-green-600 text-white rounded">Add Member</button>
+        <button disabled={!name || (!!email && !!emailError)} className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50">Add Member</button>
       </form>
 
       <div className="space-y-2">
