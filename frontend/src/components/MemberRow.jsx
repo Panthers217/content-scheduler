@@ -33,14 +33,23 @@ export default function MemberRow({ member, onDelete }) {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm border border-white/20 p-4 rounded-xl hover:bg-white/15 transition-all duration-200 group">
+    <div className={`bg-white/10 backdrop-blur-sm border rounded-xl hover:bg-white/15 transition-all duration-200 group p-4 ${
+      member.isDemoData ? 'border-amber-500/30 bg-amber-500/5' : 'border-white/20'
+    }`}>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
             {member.name.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1">
-            <div className="font-medium text-white text-lg">{member.name}</div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="font-medium text-white text-lg">{member.name}</div>
+              {member.isDemoData && (
+                <span className="px-2 py-1 text-xs bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">
+                  Demo Data
+                </span>
+              )}
+            </div>
             {member.email && (
               <div className="text-sm text-white/60">{member.email}</div>
             )}
@@ -50,16 +59,23 @@ export default function MemberRow({ member, onDelete }) {
                 <span className="capitalize">{member.role}</span>
               </span>
             </div>
+            {member.isDemoData && (
+              <div className="mt-2 text-xs text-amber-300/80 italic">
+                💡 This is sample team member data for demonstration purposes.
+              </div>
+            )}
           </div>
         </div>
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <button 
-            onClick={onDelete} 
-            className="px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
-          >
-            Remove
-          </button>
-        </div>
+        {!member.isDemoData && (
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button 
+              onClick={onDelete} 
+              className="px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
+            >
+              Remove
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

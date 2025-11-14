@@ -253,10 +253,12 @@ export default function Calendar() {
                     {dayPosts.slice(0, 3).map(post => (
                       <div
                         key={post._id}
-                        className={`text-xs p-1 rounded truncate ${getStatusColor(post.status)} text-white`}
-                        title={`${post.title} - ${formatTime(post.scheduledTime || post.scheduledAt)}`}
+                        className={`text-xs p-1 rounded truncate ${getStatusColor(post.status)} text-white ${
+                          post.isDemoData ? 'border border-amber-400/30' : ''
+                        }`}
+                        title={`${post.title} - ${formatTime(post.scheduledTime || post.scheduledAt)}${post.isDemoData ? ' (Demo Data)' : ''}`}
                       >
-                        {formatTime(post.scheduledTime || post.scheduledAt)} {post.title}
+                        {post.isDemoData && '💡 '}{formatTime(post.scheduledTime || post.scheduledAt)} {post.title}
                       </div>
                     ))}
                     {dayPosts.length > 3 && (
@@ -321,13 +323,20 @@ export default function Calendar() {
               getPostsForDate(currentDate)
                 .sort((a, b) => new Date(a.scheduledTime || a.scheduledAt) - new Date(b.scheduledTime || b.scheduledAt))
                 .map(post => (
-                  <div key={post._id} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                  <div key={post._id} className={`bg-white/10 rounded-lg p-4 border ${
+                    post.isDemoData ? 'border-amber-500/30 bg-amber-500/5' : 'border-white/20'
+                  }`}>
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${getStatusColor(post.status)}`}></div>
                         <span className="text-white/60 text-sm">
                           {formatTime(post.scheduledTime || post.scheduledAt)}
                         </span>
+                        {post.isDemoData && (
+                          <span className="px-2 py-1 text-xs bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">
+                            Demo
+                          </span>
+                        )}
                       </div>
                       <span className={`px-2 py-1 text-xs rounded-full text-white ${getStatusColor(post.status)}`}>
                         {post.status}

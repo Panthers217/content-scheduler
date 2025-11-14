@@ -48,7 +48,18 @@ export default function Team() {
   }
 
   function deleteMember(id) {
-    axios.delete(`${getApiUrl()}/api/members/${id}`).then(() => fetchMembers()).catch(() => {})
+    if (!confirm('Are you sure you want to delete this team member?')) return
+    
+    axios.delete(`${getApiUrl()}/api/members/${id}`)
+      .then(() => fetchMembers())
+      .catch((error) => {
+        console.error('Delete error:', error)
+        if (error.response?.data?.error === 'demo_data_protected') {
+          alert('Demo team members cannot be deleted. This is sample data for demonstration purposes.')
+        } else {
+          alert('Failed to delete team member. Please try again.')
+        }
+      })
   }
 
   return (

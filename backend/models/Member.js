@@ -6,7 +6,16 @@ const MemberSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin','editor','viewer'], default: 'viewer' },
   status: { type: String, enum: ['active','inactive'], default: 'active' },
   joinedAt: { type: Date, default: Date.now },
-  permissions: [{ type: String }]
+  permissions: [{ type: String }],
+  // Demo data protection
+  isDemoData: {
+    type: Boolean,
+    default: false
+  },
+  demoDescription: {
+    type: String,
+    default: ''
+  }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Member', MemberSchema)

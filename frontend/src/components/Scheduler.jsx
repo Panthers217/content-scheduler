@@ -200,6 +200,24 @@ export default function Scheduler() {
     window.open(getApiUrl('/api/bulk-upload/template'), '_blank')
   }
 
+  const deletePost = async (postId) => {
+    if (!confirm('Are you sure you want to delete this post?')) return
+
+    try {
+      const response = await axios.delete(getApiUrl(`/api/posts/${postId}`))
+      if (response.data.success) {
+        setItems(items.filter(item => item._id !== postId))
+      }
+    } catch (error) {
+      console.error('Delete error:', error)
+      if (error.response?.data?.error === 'demo_data_protected') {
+        alert('Demo data cannot be deleted. This is sample data for demonstration purposes.')
+      } else {
+        alert('Failed to delete post. Please try again.')
+      }
+    }
+  }
+
   // Filter posts based on current filters
   const filteredItems = items.filter(item => {
     return (!filter.category || item.category === filter.category) &&
@@ -493,10 +511,19 @@ export default function Scheduler() {
           </div>
         )}
         {filteredItems.map((it, idx) => (
-          <div key={it._id || idx} className="bg-white/10 backdrop-blur-sm border border-white/20 p-4 rounded-xl hover:bg-white/15 transition-all duration-200">
+          <div key={it._id || idx} className={`bg-white/10 backdrop-blur-sm border rounded-xl hover:bg-white/15 transition-all duration-200 p-4 ${
+            it.isDemoData ? 'border-amber-500/30 bg-amber-500/5' : 'border-white/20'
+          }`}>
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <div className="font-medium text-white text-lg">{it.title}</div>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="font-medium text-white text-lg">{it.title}</div>
+                  {it.isDemoData && (
+                    <span className="px-2 py-1 text-xs bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">
+                      Demo Data
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-white/80 mt-1">{it.content}</div>
                 <div className="text-sm text-white/60 mt-2 flex flex-wrap gap-4">
                   <span>📅 {new Date(it.scheduledTime || it.scheduledAt).toLocaleDateString()} at {new Date(it.scheduledTime || it.scheduledAt).toLocaleTimeString()}</span>
@@ -513,6 +540,11 @@ export default function Scheduler() {
                     ))}
                   </div>
                 )}
+                {it.isDemoData && (
+                  <div className="mt-2 text-xs text-amber-300/80 italic">
+                    💡 This is sample data for demonstration purposes and cannot be modified or deleted.
+                  </div>
+                )}
               </div>
               <div className="ml-4 flex flex-col gap-2">
                 <span className={`px-3 py-1 text-xs font-medium rounded-full text-white ${
@@ -522,6 +554,14 @@ export default function Scheduler() {
                 }`}>
                   {it.status || 'scheduled'}
                 </span>
+                {!it.isDemoData && (
+                  <button
+                    onClick={() => deletePost(it._id)}
+                    className="px-2 py-1 text-xs bg-red-500/20 text-red-300 rounded hover:bg-red-500/30 transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </div>

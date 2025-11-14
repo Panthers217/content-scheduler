@@ -107,18 +107,28 @@ const PostSchema = new mongoose.Schema({
       referrer: String,
       location: String
     }
-  }]
+  }],
+
+  // Demo data protection
+  isDemoData: {
+    type: Boolean,
+    default: false
+  },
+  demoDescription: {
+    type: String,
+    default: ''
+  }
 }, { timestamps: true })
 
 // Analytics methods
-postSchema.methods.incrementViews = function() {
+PostSchema.methods.incrementViews = function() {
   this.analytics.views += 1
   this.analytics.lastUpdated = new Date()
   this.events.push({ type: 'view' })
   return this.save()
 }
 
-postSchema.methods.incrementClicks = function() {
+PostSchema.methods.incrementClicks = function() {
   this.analytics.clicks += 1
   this.analytics.lastUpdated = new Date()
   this.events.push({ type: 'click' })
@@ -126,7 +136,7 @@ postSchema.methods.incrementClicks = function() {
   return this.save()
 }
 
-postSchema.methods.incrementLikes = function() {
+PostSchema.methods.incrementLikes = function() {
   this.analytics.likes += 1
   this.analytics.lastUpdated = new Date()
   this.events.push({ type: 'like' })
@@ -134,7 +144,7 @@ postSchema.methods.incrementLikes = function() {
   return this.save()
 }
 
-postSchema.methods.incrementShares = function() {
+PostSchema.methods.incrementShares = function() {
   this.analytics.shares += 1
   this.analytics.lastUpdated = new Date()
   this.events.push({ type: 'share' })
@@ -142,7 +152,7 @@ postSchema.methods.incrementShares = function() {
   return this.save()
 }
 
-postSchema.methods.incrementComments = function() {
+PostSchema.methods.incrementComments = function() {
   this.analytics.comments += 1
   this.analytics.lastUpdated = new Date()
   this.events.push({ type: 'comment' })
@@ -150,7 +160,7 @@ postSchema.methods.incrementComments = function() {
   return this.save()
 }
 
-postSchema.methods.updateEngagementRate = function() {
+PostSchema.methods.updateEngagementRate = function() {
   const totalEngagements = this.analytics.likes + this.analytics.shares + this.analytics.comments + this.analytics.clicks
   if (this.analytics.impressions > 0) {
     this.analytics.engagementRate = (totalEngagements / this.analytics.impressions) * 100
@@ -160,4 +170,4 @@ postSchema.methods.updateEngagementRate = function() {
   }
 }
 
-module.exports = mongoose.model('Post', postSchema)
+module.exports = mongoose.model('Post', PostSchema)
