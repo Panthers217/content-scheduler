@@ -13,14 +13,37 @@ const app = express()
 
 // CORS configuration for development and production
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://content-scheduler-demo.netlify.app', 'https://*.netlify.app', 'https://*.onrender.com']
-    : [
-        'http://localhost:5173', 
-        'http://localhost:5174',
-        'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5173.app.github.dev',
-        'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5174.app.github.dev'
-      ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+    
+    const allowedOrigins = process.env.NODE_ENV === 'production' 
+      ? [
+          'https://content-scheduler-demo.netlify.app',
+          'https://content-scheduler.netlify.app',
+          /\.netlify\.app$/,
+          /\.onrender\.com$/
+        ]
+      : [
+          'http://localhost:5173', 
+          'http://localhost:5174',
+          'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5173.app.github.dev',
+          'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5174.app.github.dev'
+        ]
+    
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') return allowed === origin
+      if (allowed instanceof RegExp) return allowed.test(origin)
+      return false
+    })
+    
+    if (isAllowed) {
+      callback(null, true)
+    } else {
+      console.log('CORS blocked origin:', origin)
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

@@ -44,19 +44,47 @@ router.get('/:id', async (req, res) => {
 // POST /api/posts
 router.post('/', async (req, res) => {
   try {
+    console.log('Received POST data:', JSON.stringify(req.body, null, 2))
+    
     if (mongoose.connection.readyState !== 1) {
       const p = Object.assign({ _id: String(Date.now()) }, req.body)
       memoryPosts().unshift(p)
       return res.status(201).json(p)
     }
+    
+    // Validate required fields
+    if (!req.body.title || !req.body.content) {
+      console.log('Missing required fields:', { title: req.body.title, content: req.body.content })
+      return res.status(400).json({ 
+        error: 'missing_required_fields',
+        message: 'Title and content are required',
+        received: req.body
+      })
+    }
+    
     // New posts are not demo data by default
     const postData = { ...req.body, isDemoData: false }
+    console.log('Creating post with data:', JSON.stringify(postData, null, 2))
+    
     const p = new Post(postData)
     await p.save()
+    console.log('Post saved successfully:', p._id)
     res.status(201).json(p)
   } catch (err) {
-    console.error('posts POST error', err && err.message)
-    res.status(400).json({ error: 'invalid_payload' })
+    console.error('POST /api/posts error:', err)
+    console.error('Error details:', err.message)
+    if (err.name === 'ValidationError') {
+      console.error('Validation errors:', err.errors)
+      return res.status(400).json({ 
+        error: 'validation_error',
+        message: err.message,
+        details: err.errors
+      })
+    }
+    res.status(400).json({ 
+      error: 'invalid_payload',
+      message: err.message 
+    })
   }
 })
 
