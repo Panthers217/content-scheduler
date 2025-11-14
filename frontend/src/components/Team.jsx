@@ -13,12 +13,14 @@ export default function Team() {
     fetchMembers()
   }, [])
 
+  const getApiUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL
+    if (window.location.hostname === 'localhost') return 'http://localhost:4000'
+    return 'https://content-scheduler.onrender.com' // Replace xxxx with your actual URL
+  }
+
   function fetchMembers() {
-    const apiUrl = import.meta.env.MODE === 'production' 
-      ? `${import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com'}/api/members`
-      : '/api/members'
-    
-    axios.get(apiUrl).then(r => setMembers(r.data || [])).catch(() => setMembers([]))
+    axios.get(`${getApiUrl()}/api/members`).then(r => setMembers(r.data || [])).catch(() => setMembers([]))
   }
 
   function validateEmail(value) {
@@ -36,11 +38,7 @@ export default function Team() {
     if (!name) return
 
     const payload = { name, email, role }
-    const apiUrl = import.meta.env.MODE === 'production' 
-      ? `${import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com'}/api/members`
-      : '/api/members'
-    
-    axios.post(apiUrl, payload).then(() => {
+    axios.post(`${getApiUrl()}/api/members`, payload).then(() => {
       setName('')
       setEmail('')
       setRole('viewer')
@@ -50,11 +48,7 @@ export default function Team() {
   }
 
   function deleteMember(id) {
-    const apiUrl = import.meta.env.MODE === 'production' 
-      ? `${import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com'}/api/members/${id}`
-      : `/api/members/${id}`
-    
-    axios.delete(apiUrl).then(() => fetchMembers()).catch(() => {})
+    axios.delete(`${getApiUrl()}/api/members/${id}`).then(() => fetchMembers()).catch(() => {})
   }
 
   return (

@@ -1,8 +1,20 @@
 // API configuration for different environments
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.MODE === 'production' 
-    ? 'https://your-backend-app.onrender.com' // Replace with your Render URL
-    : 'http://localhost:4000'
-  )
+const getApiBaseUrl = () => {
+  // Check for environment variable first
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  
+  // Local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:4000'
+  }
+  
+  // Production - replace this with your actual Render backend URL
+  return 'https://content-scheduler.onrender.com'
+}
 
-export { API_BASE_URL }
+export const API_BASE_URL = getApiBaseUrl()
+
+// Helper function for API calls
+export const getApiUrl = (endpoint) => `${API_BASE_URL}${endpoint}`

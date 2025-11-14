@@ -6,12 +6,15 @@ export default function Scheduler() {
   const [title, setTitle] = useState('')
 
   useEffect(() => {
-    // Placeholder: fetch scheduled content from backend
-    const apiUrl = import.meta.env.MODE === 'production' 
-      ? `${import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com'}/api/posts`
-      : '/api/posts'
+    // Fetch scheduled content from backend
+    const getApiUrl = () => {
+      if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL
+      if (window.location.hostname === 'localhost') return 'http://localhost:4000'
+      // Auto-detect production backend URL - update this with your actual Render URL
+      return 'https://content-scheduler.onrender.com' // Replace xxxx with your actual URL
+    }
     
-    axios.get(apiUrl)
+    axios.get(`${getApiUrl()}/api/posts`)
       .then(res => setItems(res.data || []))
       .catch(() => setItems([]))
   }, [])
@@ -22,11 +25,13 @@ export default function Scheduler() {
     // Optimistic UI
     setItems([newItem, ...items])
     setTitle('')
-    const apiUrl = import.meta.env.MODE === 'production' 
-      ? `${import.meta.env.VITE_API_URL || 'https://your-backend-app.onrender.com'}/api/posts`
-      : '/api/posts'
+    const getApiUrl = () => {
+      if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL
+      if (window.location.hostname === 'localhost') return 'http://localhost:4000'
+      return 'https://content-scheduler-backend-xxxx.onrender.com' // Replace xxxx with your actual URL
+    }
     
-    axios.post(apiUrl, newItem).catch(() => {})
+    axios.post(`${getApiUrl()}/api/posts`, newItem).catch(() => {})
   }
 
   return (
