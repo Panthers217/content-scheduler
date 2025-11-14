@@ -64,6 +64,17 @@ router.post('/', async (req, res) => {
     
     // New posts are not demo data by default
     const postData = { ...req.body, isDemoData: false }
+    
+    // Clean up empty string fields that should be null/undefined for ObjectId references
+    if (postData.templateId === '') {
+      delete postData.templateId
+    }
+    
+    // Clean up other empty string fields
+    if (postData.recurringEndDate === '') {
+      delete postData.recurringEndDate
+    }
+    
     console.log('Creating post with data:', JSON.stringify(postData, null, 2))
     
     const p = new Post(postData)
