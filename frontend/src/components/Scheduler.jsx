@@ -98,8 +98,16 @@ export default function Scheduler() {
     try {
       const postData = {
         ...formData,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
         scheduledTime: formData.scheduledTime || new Date().toISOString()
+      }
+
+      // Remove empty string fields that should be null/undefined
+      if (postData.templateId === '') {
+        delete postData.templateId
+      }
+      if (postData.recurringEndDate === '') {
+        delete postData.recurringEndDate
       }
 
       if (formData.isRecurring) {
