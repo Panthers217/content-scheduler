@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
       // DB not connected — return in-memory posts for dev
       return res.json(memoryPosts())
     }
-    const posts = await Post.find().sort({ scheduledAt: -1 }).limit(50)
+    const posts = await Post.find().sort({ scheduledTime: -1 }).limit(50)
     res.json(posts)
   } catch (err) {
     console.error('posts GET error', err.message)

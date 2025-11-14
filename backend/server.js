@@ -5,16 +5,22 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const postsRouter = require('./routes/posts')
 const membersRouter = require('./routes/members')
+const templatesRouter = require('./routes/templates')
 
 require('dotenv').config()
 
 const app = express()
 
-// CORS configuration for production
+// CORS configuration for development and production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://content-scheduler-demo.netlify.app', 'https://*.netlify.app', 'https://*.onrender.com'] // Updated with your Netlify URL
-    : ['http://localhost:5173', 'http://localhost:5174'],
+    ? ['https://content-scheduler-demo.netlify.app', 'https://*.netlify.app', 'https://*.onrender.com']
+    : [
+        'http://localhost:5173', 
+        'http://localhost:5174',
+        'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5173.app.github.dev',
+        'https://vigilant-fishstick-7wgvvx97jjwcrr7q-5174.app.github.dev'
+      ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -35,17 +41,24 @@ mongoose.connect(mongoUri, {
 })
 .then(() => {
   console.log('Connected to MongoDB:', process.env.NODE_ENV === 'production' ? 'Production DB' : 'Local DB')
+  console.log('MongoDB connection state:', mongoose.connection.readyState)
+  console.log('Database name:', mongoose.connection.db?.databaseName)
 })
 .catch(err => {
   console.error('MongoDB connection error:', err)
+  console.log('Connection state on error:', mongoose.connection.readyState)
   // In production, you might want to exit the process
   if (process.env.NODE_ENV === 'production') {
     console.log('Note: Using in-memory storage as fallback')
   }
 })
 
-app.use('/api/posts', postsRouter)
-app.use('/api/members', membersRouter)
+// Routes
+app.use('/api/posts', postsRouter);
+app.use('/api/members', membersRouter);
+app.use('/api/templates', templatesRouter);
+app.use('/api/bulk-upload', require('./routes/bulkUpload'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/health', (req, res) => res.json({ ok: true }))
 
