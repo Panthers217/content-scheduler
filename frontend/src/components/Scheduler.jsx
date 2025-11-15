@@ -234,8 +234,8 @@ export default function Scheduler() {
   })
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
+    <div className="Schedule-Header">
+      <div className="Schedule-Header sm:inline-block md:flex lg:flex xl:flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-white flex items-center">
           <svg className="w-6 h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -147,9 +147,9 @@ export default function Calendar() {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   return (
-    <div className="p-6">
+    <div className="Calendar-container lg:p-6 xl:p-6 md:p-6 sm:p-4 xs:p-[0.5rem]">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex xs:inline-block justify-between items-center mb-6 ">
         <h2 className="text-2xl font-bold text-white flex items-center">
           <svg className="w-6 h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -242,15 +242,15 @@ export default function Calendar() {
                 <div
                   key={index}
                   onClick={() => setSelectedDate(dayObj.date)}
-                  className={`min-h-[120px] p-2 bg-white/5 hover:bg-white/10 cursor-pointer transition-colors ${
+                  className={`min-h-[60px] xs:min-h-[80px] sm:min-h-[120px] p-1 xs:p-2 bg-white/5 hover:bg-white/10 cursor-pointer transition-colors ${
                     !dayObj.isCurrentMonth ? 'text-white/40' : 'text-white'
                   } ${isToday ? 'bg-blue-500/20' : ''} ${isSelected ? 'bg-blue-500/30' : ''}`}
                 >
-                  <div className={`text-sm font-medium mb-1 ${isToday ? 'text-blue-300' : ''}`}>
+                  <div className={`text-xs xs:text-sm font-medium mb-1 ${isToday ? 'text-blue-300' : ''}`}>
                     {dayObj.day}
                   </div>
                   <div className="space-y-1">
-                    {dayPosts.slice(0, 3).map(post => (
+                    {dayPosts.slice(0, viewMode === 'month' ? (window.innerWidth < 475 ? 1 : 3) : 3).map(post => (
                       <div
                         key={post._id}
                         className={`text-xs p-1 rounded truncate ${getStatusColor(post.status)} text-white ${
@@ -258,12 +258,16 @@ export default function Calendar() {
                         }`}
                         title={`${post.title} - ${formatTime(post.scheduledTime || post.scheduledAt)}${post.isDemoData ? ' (Demo Data)' : ''}`}
                       >
-                        {post.isDemoData && '💡 '}{formatTime(post.scheduledTime || post.scheduledAt)} {post.title}
+                        <span className="xs:hidden">•</span>
+                        <span className="hidden xs:inline">{post.isDemoData && '💡 '}{formatTime(post.scheduledTime || post.scheduledAt)} </span>
+                        <span className="xs:hidden">{dayPosts.length}</span>
+                        <span className="hidden xs:inline">{post.title}</span>
                       </div>
                     ))}
-                    {dayPosts.length > 3 && (
+                    {dayPosts.length > (window.innerWidth < 475 ? 1 : 3) && (
                       <div className="text-xs text-white/60">
-                        +{dayPosts.length - 3} more
+                        <span className="xs:hidden">+{dayPosts.length - 1}</span>
+                        <span className="hidden xs:inline">+{dayPosts.length - 3} more</span>
                       </div>
                     )}
                   </div>

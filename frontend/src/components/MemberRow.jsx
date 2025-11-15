@@ -37,7 +37,7 @@ export default function MemberRow({ member, onDelete }) {
       member.isDemoData ? 'border-amber-500/30 bg-amber-500/5' : 'border-white/20'
     }`}>
       <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 xs:inline-block">
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-slate-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
             {member.name.charAt(0).toUpperCase()}
           </div>

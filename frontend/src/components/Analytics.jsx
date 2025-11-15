@@ -177,7 +177,7 @@ export default function Analytics() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex xs:inline-block justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-white flex items-center">
           <svg className="w-6 h-6 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -324,7 +324,7 @@ export default function Analytics() {
           <div className="space-y-3">
             {topPosts.length > 0 ? (
               topPosts.map((post, index) => (
-                <div key={post._id} className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                <div key={post._id} className="top-post-card-div flex xs:inline-block justify-between items-center p-3 bg-white/5 rounded-lg">
                   <div className="flex-1">
                     <p className="text-white text-sm font-medium truncate">{post.title}</p>
                     <p className="text-white/60 text-xs">{post.platform} • {post.category}</p>
