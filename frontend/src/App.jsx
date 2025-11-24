@@ -7,6 +7,7 @@ import Team from './components/Team'
 import Calendar from './components/Calendar'
 import Analytics from './components/Analytics'
 import ProjectWalkthroughVideo from './components/ProjectWalkthroughVideo'
+import ProjectStructure from './components/ProjectStructure'
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
       
       <NavBar />
       <ProjectWalkthroughVideo />
+      <ProjectStructure />
+      
       {/* Main Content with Glass Container */}
       <main className=" max-w-6xl mx-auto p-6  relative z-10 ">
         <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 shadow-2xl p-6 xs:p-0 min-h-[calc(100vh-12rem)]">
