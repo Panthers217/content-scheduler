@@ -8,6 +8,7 @@ import Calendar from './components/Calendar'
 import Analytics from './components/Analytics'
 import ProjectWalkthroughVideo from './components/ProjectWalkthroughVideo'
 import ProjectStructure from './components/ProjectStructure'
+import WelcomeToast from './components/WelcomeToast'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <NavBar />
       <ProjectWalkthroughVideo />
       <ProjectStructure />
+      <WelcomeToast />
       
       {/* Main Content with Glass Container */}
       <main className=" max-w-6xl mx-auto p-6  relative z-10 ">
